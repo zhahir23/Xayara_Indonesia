@@ -70,7 +70,7 @@ async function syncToGoogleSheets(data) {
     await getSheetName();
     
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-    const range = `${sheetName}!A:L`;
+    const range = `${sheetName}!A:M`;
 
     // Prepare data for Google Sheets
     const values = data.map(res => [
@@ -100,7 +100,7 @@ async function syncToGoogleSheets(data) {
       valueInputOption: 'USER_ENTERED',
       resource: {
         values: [
-          ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Tanggal', 'Kebutuhan', 'Merek', 'Total Unit', 'PK', 'Status', 'Created At'],
+          ['ID', 'Nama', 'Email', 'Alamat', 'Telepon', 'Tanggal', 'Kebutuhan', 'Merek', 'Total Unit', 'PK', 'Referral Code', 'Status', 'Created At'],
           ...values
         ]
       }
@@ -147,8 +147,9 @@ async function loadFromGoogleSheets() {
       merek: row[7],
       totalUnit: row[8],
       pk: row[9],
-      status: row[10] || 'pending',
-      createdAt: row[11]
+      referralCode: row[10] || '',
+      status: row[11] || 'pending',
+      createdAt: row[12]
     }));
 
     reservations = data;
@@ -162,8 +163,17 @@ async function loadFromGoogleSheets() {
 }
 
 // Generate unique ID
-const generateId = () => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+const generateBookingId = () => {
+   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(
+      Math.floor(Math.random() * chars.length)
+    );
+  }
+
+  return result;
 };
 
 exports.createReservation = async (req, res) => {
@@ -185,11 +195,12 @@ exports.createReservation = async (req, res) => {
       merekLainnya,
       totalUnit,
       pk,
-      pkLainnya
+      pkLainnya,
+      referralCode
     } = req.body;
 
     const newReservation = {
-      id: generateId(),
+      id: generateBookingId(),
       nama,
       email,
       alamat,
@@ -202,6 +213,7 @@ exports.createReservation = async (req, res) => {
       totalUnit,
       pk,
       pkLainnya,
+      referralCode,
       status: 'pending',
       createdAt: new Date().toISOString()
     };
@@ -229,40 +241,75 @@ exports.getAllReservations = async (req, res) => {
 
 exports.updateReservation = async (req, res) => {
   try {
+    await loadFromGoogleSheets();
+
     const { id } = req.params;
     const updates = req.body;
 
-    const index = reservations.findIndex(r => r.id === id);
+    const index = reservations.findIndex(
+      r => String(r.id) === String(id)
+    );
+
     if (index === -1) {
-      return res.status(404).json({ message: 'Reservation not found' });
+      return res.status(404).json({
+        message: 'Reservation not found'
+      });
     }
 
-    reservations[index] = { ...reservations[index], ...updates };
+    reservations[index] = {
+      ...reservations[index],
+      ...updates
+    };
+
     await syncToGoogleSheets(reservations);
 
     res.json({
+      success: true,
       message: 'Reservation updated successfully',
       reservation: reservations[index]
     });
+
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };
 
 exports.deleteReservation = async (req, res) => {
   try {
+    await loadFromGoogleSheets();
+
     const { id } = req.params;
 
-    const index = reservations.findIndex(r => r.id === id);
+    const index = reservations.findIndex(
+      r => String(r.id) === String(id)
+    );
+
     if (index === -1) {
-      return res.status(404).json({ message: 'Reservation not found' });
+      return res.status(404).json({
+        message: 'Reservation not found'
+      });
     }
 
     reservations.splice(index, 1);
+
     await syncToGoogleSheets(reservations);
 
-    res.json({ message: 'Reservation deleted successfully' });
+    res.json({
+      success: true,
+      message: 'Reservation deleted successfully'
+    });
+
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
 };

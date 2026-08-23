@@ -5,6 +5,21 @@ import api from '../lib/axios';
 
 const Reservation = () => {
   const navigate = useNavigate();
+  const referralCodes = [
+  "AMEL01",
+  "MUTHI02",
+  "DITHA03",
+  "SANIA04",
+  "LAILATUL05",
+  "CHAIRUNNISA06",
+  "CAHYA07",
+  "PRAKAS08",
+  "RYAN09",
+  "SAEFUL10",
+  "SATRIO11",
+  "WAHYU12",
+  "BILI13"
+];
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
@@ -17,11 +32,13 @@ const Reservation = () => {
     merekLainnya: '',
     totalUnit: '',
     pk: '',
-    pkLainnya: ''
+    pkLainnya: '',
+    referralCode: ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [reservationData, setReservationData] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -36,8 +53,20 @@ const Reservation = () => {
     setError('');
 
     try {
-      await api.post('/reservations', formData);
-      setSuccess(true);
+      const response = await api.post('/reservations', formData);
+      console.log('RESPONSE:', response.data);
+      setReservationData({
+        bookingId: response.data.reservation.id,
+        nama: response.data.reservation.nama,
+        email: response.data.reservation.email,
+        alamat: response.data.reservation.alamat,
+        telepon: response.data.reservation.telepon,
+        merek: response.data.reservation.merek,
+        tanggal: response.data.reservation.tanggal,
+        referralCode: formData.referralCode
+      });
+
+setSuccess(true);
       setFormData({
         nama: '',
         email: '',
@@ -65,6 +94,23 @@ const Reservation = () => {
     }
   };
 
+  const whatsappMessage = reservationData
+  ? encodeURIComponent(
+      `Halo Admin Xayara Indonesia, saya ingin konfirmasi reservasi saya dengan Booking ID: *${reservationData.bookingId}*.
+      Detail:
+      - id Booking: ${reservationData.bookingId}
+      - Nama: ${reservationData.nama}
+      - Email: ${reservationData.email}
+      - Alamat: ${reservationData.alamat}
+      - No. HP: ${reservationData.telepon}
+      - Merek AC: ${reservationData.merek}
+      - Tanggal: ${reservationData.tanggal}
+      - Referral Code: ${reservationData.referralCode}`
+
+    )
+  : '';
+  const whatsappLink = `https://wa.me/6285810200501?text=${whatsappMessage}`;
+
   if (success) {
     return (
       <div className="min-h-screen bg-gray-50 py-20">
@@ -77,9 +123,20 @@ const Reservation = () => {
             <p className="text-gray-600 mb-6">
               Terima kasih telah melakukan reservasi. Tim kami akan segera menghubungi Anda untuk konfirmasi.
             </p>
+            <p className="text-sm font-semibold text-gray-600 mb-1">
+              Booking ID Anda: {reservationData.bookingId}
+            </p>
             <p className="text-sm text-gray-500">
               Anda akan diarahkan ke halaman beranda dalam beberapa detik...
             </p>
+            <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg transition"
+            >
+  Chat WhatsApp Admin
+</a>
           </div>
         </div>
       </div>
@@ -169,6 +226,27 @@ const Reservation = () => {
                 className="input-field"
                 placeholder="0812-3456-7890"
               />
+            </div>
+
+            {/* Kode Refferal */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Kode Referral
+              </label>
+
+              <select
+                name="referralCode"
+                value={formData.referralCode}
+                onChange={handleChange}
+                className="input-field"
+              >
+                <option value="">Tanpa Referral</option>
+                {referralCodes.map((code) => (
+                  <option key={code} value={code}>
+                    {code}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Tanggal */}

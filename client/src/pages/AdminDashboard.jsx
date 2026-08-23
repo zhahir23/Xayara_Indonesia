@@ -23,8 +23,17 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [referralFilter, setReferralFilter] = useState('all');
   const [editingReservation, setEditingReservation] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  const referralCodes = [
+  ...new Set(
+    reservations
+      .map(r => r.referralCode)
+      .filter(Boolean)
+  )
+];
 
   useEffect(() => {
     checkAuth();
@@ -107,10 +116,14 @@ const AdminDashboard = () => {
       reservation.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reservation.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       reservation.telepon.includes(searchTerm);
-    
+
+    const matchesReferral =
+    referralFilter === 'all' ||
+    reservation.referralCode === referralFilter;
+
     const matchesStatus = statusFilter === 'all' || reservation.status === statusFilter;
     
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesReferral;
   });
 
   const getStatusBadge = (status) => {
@@ -295,17 +308,33 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* Kode Reffeal */}
+        <select
+          value={referralFilter}
+          onChange={(e) => setReferralFilter(e.target.value)}
+        >
+          <option value="all">Semua Kode Referral</option>
+          
+          {referralCodes.map((code) => (
+            <option key={code} value={code}>
+              {code}
+            </option>
+          ))}
+        </select>
+
         {/* Table */}
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b">
+                <th className="text-left py-3 px-4 font-semibold text-gray-700">Booking Id</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Kontak</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Tanggal</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Kebutuhan</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Detail AC</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
+                <th className="text-left py-3 px-4 font-semibold text-gray-700">Kode Referral</th>
                 <th className="text-left py-3 px-4 font-semibold text-gray-700">Aksi</th>
               </tr>
             </thead>
@@ -319,6 +348,7 @@ const AdminDashboard = () => {
               ) : (
                 filteredReservations.map((reservation) => (
                   <tr key={reservation.id} className="border-b hover:bg-gray-50">
+                    <td className="py-4 px-4 text-sm text-gray-900">{reservation.bookingId || reservation.id || "-"}</td>
                     <td className="py-4 px-4">
                       <div>
                         <p className="font-medium text-gray-900">{reservation.nama}</p>
@@ -354,6 +384,9 @@ const AdminDashboard = () => {
                     </td>
                     <td className="py-4 px-4">
                       {getStatusBadge(reservation.status)}
+                    </td>
+                    <td className="py-4 px-4 text-sm text-gray-900">
+                      {reservation.referralCode || '-'}
                     </td>
                     <td className="py-4 px-4">
                       <div className="flex items-center space-x-2">
