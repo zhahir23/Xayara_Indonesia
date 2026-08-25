@@ -10,6 +10,8 @@ yarn.lock
 
 # Google Sheets credentials
 server/credentials.json
+credentials.json
+xayara-reservation-system-802a6fea6f2e.json
 
 # Build output
 client/dist/
