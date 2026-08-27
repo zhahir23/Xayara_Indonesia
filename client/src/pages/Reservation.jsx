@@ -79,7 +79,8 @@ setSuccess(true);
         merekLainnya: '',
         totalUnit: '',
         pk: '',
-        pkLainnya: ''
+        pkLainnya: '',
+        referralCode: ''
       });
 
       setTimeout(() => {
@@ -228,27 +229,6 @@ setSuccess(true);
               />
             </div>
 
-            {/* Kode Refferal */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kode Referral
-              </label>
-
-              <select
-                name="referralCode"
-                value={formData.referralCode}
-                onChange={handleChange}
-                className="input-field"
-              >
-                <option value="">Tanpa Referral</option>
-                {referralCodes.map((code) => (
-                  <option key={code} value={code}>
-                    {code}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Tanggal */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -387,6 +367,26 @@ setSuccess(true);
                   placeholder="Tuliskan kapasitas AC spesifik"
                 />
               )}
+            </div>
+
+            {/* Kode Referral */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Kode Referral (Opsional)
+              </label>
+              <select
+                name="referralCode"
+                value={formData.referralCode}
+                onChange={handleChange}
+                className="input-field"
+              >
+                <option value="">Tanpa Referral</option>
+                {referralCodes.map((code) => (
+                  <option key={code} value={code}>
+                    {code}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Submit Button */}
