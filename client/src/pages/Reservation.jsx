@@ -6,20 +6,20 @@ import api from '../lib/axios';
 const Reservation = () => {
   const navigate = useNavigate();
   const referralCodes = [
-  "AMEL01",
-  "MUTHI02",
-  "DITHA03",
-  "SANIA04",
-  "LAILATUL05",
-  "CHAIRUNNISA06",
-  "CAHYA07",
-  "PRAKAS08",
-  "RYAN09",
-  "SAEFUL10",
-  "SATRIO11",
-  "WAHYU12",
-  "BILI13"
-];
+    'AMEL01',
+    'MUTHI02',
+    'DITHA03',
+    'SANIA04',
+    'LAILATUL05',
+    'CHAIRUNNISA06',
+    'CAHYA07',
+    'PRAKAS08',
+    'RYAN09',
+    'SAEFUL10',
+    'SATRIO11',
+    'WAHYU12',
+    'BILI13'
+  ];
   const [formData, setFormData] = useState({
     nama: '',
     email: '',
