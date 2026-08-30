@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, Loader2, AlertCircle } from 'lucide-react';
 import api from '../lib/axios';
+import logo from '../assets/logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -42,9 +43,13 @@ const Login = () => {
       <div className="max-w-md w-full">
         <div className="card">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-3xl">X</span>
-            </div>
+            <Link to="/" className="inline-block mx-auto mb-4" title="Kembali ke Beranda">
+              <img
+                src={logo}
+                alt="Xayara Indonesia"
+                className="h-14 w-auto object-contain mx-auto transition-transform hover:scale-105"
+              />
+            </Link>
             <h2 className="text-3xl font-bold text-gray-900">
               Admin Login
             </h2>
@@ -73,6 +78,7 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoComplete="username"
                   className="input-field pl-10"
                   placeholder="admin@xayara.com"
                 />
@@ -91,6 +97,7 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   required
+                  autoComplete="current-password"
                   className="input-field pl-10"
                   placeholder="••••••••"
                 />
@@ -112,12 +119,6 @@ const Login = () => {
               )}
             </button>
           </form>
-
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>Default credentials:</p>
-            <p className="font-mono">Email: admin@xayara.com</p>
-            <p className="font-mono">Password: admin123</p>
-          </div>
         </div>
       </div>
     </div>

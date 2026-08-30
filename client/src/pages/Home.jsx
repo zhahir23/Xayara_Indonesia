@@ -10,6 +10,7 @@ import {
   CheckCircle,
   ArrowRight
 } from 'lucide-react';
+import heroImage from '../../../referensi/heroImage.jpeg';
 
 const Home = () => {
   const services = [
@@ -45,25 +46,39 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-600 to-primary-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Spesialis HVAC & Elektrikal Bersertifikasi
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-primary-100">
-              Cuci AC mulai dari Rp 60.000! Melayani jasa service, bongkar pasang AC & jual beli barang elektronik area Jabodetabek
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/reservation" className="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-primary-50 transition-colors duration-200 inline-flex items-center justify-center">
-                Buat Reservasi Sekarang
-                <ArrowRight className="w-5 h-5 ml-2" />
+      <section className="pb-8 lg:pb-20 -mt-20">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 min-w-0 md:items-stretch">
+          {/* Left Content */}
+          <div className="min-w-0 overflow-hidden pt-24 pb-20 md:pt-28 md:pb-16 bg-[#0c1f41] order-2 md:order-1 px-6 sm:px-10 md:px-8 lg:px-12 flex items-center justify-center md:justify-end">
+            <div className="max-w-md w-full text-left md:ml-auto md:mr-0">
+              <h1 className="font-black text-2xl sm:text-3xl lg:text-4xl text-white mb-4 leading-tight">
+                Layanan HVAC Profesional
+                <br />
+                <span className="text-blue-200">Oleh Teknisi Bersertifikat</span>
+              </h1>
+              <p className="font-normal text-base lg:text-lg text-white mb-6 leading-relaxed">
+                Kami melayani instalasi, perawatan, dan perbaikan berbagai sistem HVAC, seperti AC Split, Cassette, VRV/VRF, AHU, Chiller, Plumbing, Elektronik, serta sistem ventilasi dan ducting.
+              </p>
+              <Link to="/reservation" className="block w-full md:w-fit">
+                <div className="w-full md:w-fit px-10 py-3 rounded-full mt-2 transition-transform hover:scale-105" style={{ backgroundColor: 'rgb(247, 228, 191)', color: 'rgb(31, 31, 31)' }}>
+                  <div className="flex justify-center items-center">
+                    <p className="font-bold text-base mr-4">Reservasi Sekarang</p>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 0.375C18.4219 0.375 23.625 5.57812 23.625 12C23.625 18.4219 18.4219 23.625 12 23.625C5.57812 23.625 0.375 18.4219 0.375 12C0.375 5.57812 5.57812 0.375 12 0.375ZM10.6453 7.10625L14.1844 10.5H5.625C5.00156 10.5 4.5 11.0016 4.5 11.625V12.375C4.5 12.9984 5.00156 13.5 5.625 13.5H14.1844L10.6453 16.8937C10.1906 17.3297 10.1812 18.0563 10.6266 18.5016L11.1422 19.0125C11.5828 19.4531 12.2953 19.4531 12.7313 19.0125L18.9516 12.7969C19.3922 12.3562 19.3922 11.6438 18.9516 11.2078L12.7313 4.98281C12.2906 4.54219 11.5781 4.54219 11.1422 4.98281L10.6266 5.49375C10.1812 5.94375 10.1906 6.67031 10.6453 7.10625Z" fill="#1F1F1F"></path>
+                    </svg>
+                  </div>
+                </div>
               </Link>
-              <a href="tel:+6281234567890" className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors duration-200 inline-flex items-center justify-center">
-                <Phone className="w-5 h-5 mr-2" />
-                Hubungi Kami
-              </a>
             </div>
+          </div>
+
+          {/* Right Image */}
+          <div className="min-w-0 overflow-hidden order-1 md:order-2 aspect-[4/3] md:aspect-auto">
+            <img
+              src={heroImage}
+              alt="Hero Image"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
       </section>
