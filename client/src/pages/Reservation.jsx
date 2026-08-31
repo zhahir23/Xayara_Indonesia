@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { CheckCircle, XCircle, Loader2, MapPin, AlertCircle, Navigation, ArrowRight, Snowflake, Phone, Menu, X } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { CheckCircle, XCircle, Loader2, MapPin, AlertCircle, Navigation, ArrowRight, Snowflake } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import api from '../lib/axios';
-import logo from '../assets/logo.png';
 
 const Reservation = () => {
   const navigate = useNavigate();
@@ -56,7 +55,6 @@ const Reservation = () => {
   const [availability, setAvailability] = useState(null);
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [bookingId, setBookingId] = useState(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [locationSuccess, setLocationSuccess] = useState(false);
 
   // Fetch parameters from API
@@ -390,48 +388,8 @@ const Reservation = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-white py-20">
-        {/* Navigation Bar */}
-        <nav className="fixed w-full top-0 z-[1100] bg-white border-b border-gray-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              <Link to="/" className="flex items-center space-x-2">
-                <img 
-                  src={logo} 
-                  alt="Xayara Indonesia" 
-                  className="h-12 w-auto object-contain"
-                />
-              </Link>
-              <div className="hidden lg:flex items-center space-x-8">
-                <Link to="/" className="font-medium text-gray-700 hover:text-black transition-colors">Beranda</Link>
-                <Link to="/reservation" className="font-medium text-gray-700 hover:text-black transition-colors">Reservasi</Link>
-              </div>
-              <div className="hidden lg:flex items-center space-x-6">
-                <a href="tel:+6283114106436" className="flex items-center text-gray-600 hover:text-black transition-colors">
-                  <Phone className="w-4 h-4 mr-1" />
-                  <span className="text-sm">0858-1020-0501</span>
-                </a>
-              </div>
-              <button className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-            {mobileMenuOpen && (
-              <div className="lg:hidden border-t border-gray-100 bg-white">
-                <div className="px-4 py-4 space-y-3">
-                  <Link to="/" className="block font-medium py-2 text-gray-700 hover:text-black transition-colors">Beranda</Link>
-                  <Link to="/reservation" className="block font-medium py-2 text-gray-700 hover:text-black transition-colors">Reservasi</Link>
-                  <a href="tel:+6283114106436" className="flex items-center py-2 text-gray-600 hover:text-black transition-colors">
-                    <Phone className="w-4 h-4 mr-2" />
-                    <span>0858-1020-0501</span>
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </nav>
-
-        <div className="max-w-2xl mx-auto px-4 mt-32">
+      <div className="min-h-screen bg-white">
+        <div className="max-w-2xl mx-auto px-4 py-16">
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
             <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-12 h-12 text-green-600" />
@@ -466,46 +424,7 @@ const Reservation = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation Bar */}
-      <nav className="fixed w-full top-0 z-[1100] bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <Link to="/" className="flex items-center space-x-2">
-              <img 
-                src={logo} 
-                alt="Xayara Indonesia" 
-                className="h-12 w-auto object-contain"
-              />
-            </Link>
-            <div className="hidden lg:flex items-center space-x-8">
-              <Link to="/" className="font-medium text-gray-700 hover:text-black transition-colors">Beranda</Link>
-              <Link to="/reservation" className="font-medium text-gray-700 hover:text-black transition-colors">Reservasi</Link>
-            </div>
-            <div className="hidden lg:flex items-center space-x-6">
-              <a href="tel:+6283114106436" className="flex items-center text-gray-600 hover:text-black transition-colors">
-                <Phone className="w-4 h-4 mr-1" />
-                <span className="text-sm">0858-1020-0501</span>
-              </a>
-            </div>
-            <button className="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-          {mobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-100 bg-white">
-              <div className="px-4 py-4 space-y-3">
-                <Link to="/" className="block font-medium py-2 text-gray-700 hover:text-black transition-colors">Beranda</Link>
-                <Link to="/reservation" className="block font-medium py-2 text-gray-700 hover:text-black transition-colors">Reservasi</Link>
-                <a href="tel:+6283114106436" className="flex items-center py-2 text-gray-600 hover:text-black transition-colors">
-                  <Phone className="w-4 h-4 mr-2" />
-                  <span>0858-1020-0501</span>
-                </a>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
-      <div className="pt-20">
+      <div className="py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center bg-[#253f6a]/5 text-[#253f6a] px-5 py-2 rounded-full text-sm font-medium mb-6">

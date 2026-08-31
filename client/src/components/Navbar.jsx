@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, Mail, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { navigationItems } from '../config/navigation';
@@ -7,6 +7,11 @@ import logo from '../assets/logo.png';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+
+  // Transparent overlay only makes sense on the home page (dark hero behind it).
+  // On every other page the top of the content is light, so keep the bar solid.
+  const solid = isScrolled || location.pathname !== '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,9 +23,9 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav 
-      className={`shadow-lg sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white' : 'bg-transparent'
+    <nav
+      className={`shadow-lg sticky top-0 z-[1100] transition-all duration-300 ${
+        solid ? 'bg-white' : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,7 +46,7 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={`font-medium transition-colors ${
-                  isScrolled 
+                  solid 
                     ? 'text-gray-700 hover:text-primary-600' 
                     : 'text-white hover:text-blue-200'
                 }`}
@@ -56,7 +61,7 @@ const Navbar = () => {
             <a
               href="tel:+6285810200501"
               className={`flex items-center transition-colors ${
-                isScrolled
+                solid
                   ? 'text-gray-600 hover:text-primary-600'
                   : 'text-white hover:text-blue-200'
               }`}
@@ -70,7 +75,7 @@ const Navbar = () => {
               title="Login Admin"
               aria-label="Login Admin"
               className={`group relative flex items-center transition-colors ${
-                isScrolled
+                solid
                   ? 'text-gray-600 hover:text-primary-600'
                   : 'text-white hover:text-blue-200'
               }`}
@@ -86,7 +91,7 @@ const Navbar = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={`md:hidden p-2 rounded-lg transition-colors ${
-              isScrolled 
+              solid 
                 ? 'hover:bg-gray-100 text-gray-700' 
                 : 'hover:bg-white/10 text-white'
             }`}
@@ -99,7 +104,7 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className={`md:hidden border-t transition-colors ${
-          isScrolled 
+          solid 
             ? 'bg-white border-gray-200' 
             : 'bg-[#0c1f41] border-white/10'
         }`}>
@@ -109,7 +114,7 @@ const Navbar = () => {
                 key={item.path}
                 to={item.path}
                 className={`block font-medium py-2 ${
-                  isScrolled 
+                  solid 
                     ? 'text-gray-700 hover:text-primary-600' 
                     : 'text-white hover:text-blue-200'
                 }`}
@@ -121,7 +126,7 @@ const Navbar = () => {
             <a
               href="tel:+6285810200501"
               className={`flex items-center py-2 ${
-                isScrolled
+                solid
                   ? 'text-gray-600 hover:text-primary-600'
                   : 'text-white hover:text-blue-200'
               }`}
@@ -133,7 +138,7 @@ const Navbar = () => {
               to="/login"
               onClick={() => setIsOpen(false)}
               className={`flex items-center py-2 font-medium ${
-                isScrolled
+                solid
                   ? 'text-gray-700 hover:text-primary-600'
                   : 'text-white hover:text-blue-200'
               }`}
