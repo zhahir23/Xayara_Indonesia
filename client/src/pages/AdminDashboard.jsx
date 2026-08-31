@@ -7,6 +7,7 @@ import {
   Trash2,
   Search,
   Filter,
+  Tag,
   Download,
   RefreshCw,
   Loader2,
@@ -280,7 +281,7 @@ const AdminDashboard = () => {
 
         {/* Filters */}
         <div className="card mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <div className="flex-1 relative">
               <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
               <input
@@ -291,12 +292,13 @@ const AdminDashboard = () => {
                 className="input-field pl-10"
               />
             </div>
-            <div className="flex items-center space-x-2">
-              <Filter className="w-5 h-5 text-gray-400" />
+
+            <div className="relative md:w-52">
+              <Filter className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="input-field"
+                className="input-field pl-10"
               >
                 <option value="all">Semua Status</option>
                 <option value="pending">Pending</option>
@@ -305,22 +307,25 @@ const AdminDashboard = () => {
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
+
+            <div className="relative md:w-56">
+              <Tag className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none" />
+              <select
+                value={referralFilter}
+                onChange={(e) => setReferralFilter(e.target.value)}
+                className="input-field pl-10"
+                disabled={referralCodes.length === 0}
+              >
+                <option value="all">Semua Kode Referral</option>
+                {referralCodes.map((code) => (
+                  <option key={code} value={code}>
+                    {code}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
-
-        {/* Kode Reffeal */}
-        <select
-          value={referralFilter}
-          onChange={(e) => setReferralFilter(e.target.value)}
-        >
-          <option value="all">Semua Kode Referral</option>
-          
-          {referralCodes.map((code) => (
-            <option key={code} value={code}>
-              {code}
-            </option>
-          ))}
-        </select>
 
         {/* Table */}
         <div className="card overflow-x-auto">
