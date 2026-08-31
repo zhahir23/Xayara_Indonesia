@@ -12,15 +12,17 @@ const CustomSelect = ({ value, onChange, options, placeholder = 'Pilih...', clas
   const updatePosition = useCallback(() => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - rect.bottom;
-    const openUp = spaceBelow < 240 && rect.top > spaceBelow;
+    const MAX = 260;
+    const spaceBelow = window.innerHeight - rect.bottom - 8;
+    const spaceAbove = rect.top - 8;
+    const openUp = spaceBelow < 160 && spaceAbove > spaceBelow;
     setMenuStyle({
       position: 'fixed',
       left: rect.left,
       width: rect.width,
       ...(openUp
-        ? { bottom: window.innerHeight - rect.top + 4, maxHeight: Math.min(240, rect.top - 8) }
-        : { top: rect.bottom + 4, maxHeight: Math.min(240, spaceBelow - 8) }),
+        ? { bottom: window.innerHeight - rect.top + 4, maxHeight: Math.max(120, Math.min(MAX, spaceAbove)) }
+        : { top: rect.bottom + 4, maxHeight: Math.max(120, Math.min(MAX, spaceBelow)) }),
     });
   }, []);
 
@@ -28,7 +30,6 @@ const CustomSelect = ({ value, onChange, options, placeholder = 'Pilih...', clas
     if (!isOpen) return;
     updatePosition();
 
-    const close = () => setIsOpen(false);
     const onDocMouseDown = (e) => {
       if (
         containerRef.current && !containerRef.current.contains(e.target) &&
@@ -37,14 +38,19 @@ const CustomSelect = ({ value, onChange, options, placeholder = 'Pilih...', clas
         setIsOpen(false);
       }
     };
+    // Close when an ANCESTOR scrolls (so the menu never drifts from its trigger),
+    // but ignore scrolling that happens inside the menu list itself.
+    const onScroll = (e) => {
+      if (menuRef.current && menuRef.current.contains(e.target)) return;
+      setIsOpen(false);
+    };
     document.addEventListener('mousedown', onDocMouseDown);
     window.addEventListener('resize', updatePosition);
-    // close on any scroll of an ancestor so the menu never drifts away from its trigger
-    window.addEventListener('scroll', close, true);
+    window.addEventListener('scroll', onScroll, true);
     return () => {
       document.removeEventListener('mousedown', onDocMouseDown);
       window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', close, true);
+      window.removeEventListener('scroll', onScroll, true);
     };
   }, [isOpen, updatePosition]);
 
