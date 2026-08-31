@@ -37,4 +37,7 @@ yarn-error.log*
 # Temporary files
 *.tmp
 *.temp
-port-banner-dev.patch 
+
+# Patch & bundle bantu (jangan di-commit)
+*.patch
+*.bundle
