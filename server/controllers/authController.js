@@ -1,60 +1,45 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const pool = require('../config/database');
+const { getTokenVersion } = require('../middleware/auth');
 
-const ADMIN_CREDENTIALS = {
-  email: 'admin@xayara.com',
-  password: 'admin123'
-};
-
-const hasDatabaseConfiguration = () => {
-  return Boolean(
-    process.env.DATABASE_URL ||
-    process.env.DB_HOST ||
-    process.env.POSTGRES_URL ||
-    process.env.MYSQL_HOST ||
-    process.env.MONGODB_URI
-  );
-};
-
-const createAdminToken = (email) => {
-  return jwt.sign(
-    { email, role: 'admin' },
-    process.env.JWT_SECRET || 'xayara_default_secret_key',
-    { expiresIn: '24h' }
-  );
-};
 
 exports.login = async (req, res) => {
   try {
-    const { email = '', password = '' } = req.body || {};
+    const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    // Query admin from database
+    const adminResult = await pool.query(
+      'SELECT * FROM admins WHERE email = $1',
+      [email]
+    );
+
+    if (adminResult.rows.length === 0) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const shouldBypassLoginCheck = !hasDatabaseConfiguration() || process.env.ENABLE_LOGIN_BYPASS === 'true';
+    const admin = adminResult.rows[0];
 
-    if (shouldBypassLoginCheck) {
-      const token = createAdminToken(email);
-      return res.json({
-        token,
-        user: { email, role: 'admin' }
-      });
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, admin.password_hash);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
-      const token = createAdminToken(email);
-      return res.json({
-        token,
-        user: { email, role: 'admin' }
-      });
-    }
+    const token = jwt.sign(
+      { email, role: admin.role, tokenVersion: getTokenVersion() },
+      process.env.JWT_SECRET || 'xayara_default_secret_key',
+      { expiresIn: '30m' }
+    );
 
-    return res.status(401).json({ message: 'Invalid credentials' });
+    return res.json({
+      token,
+      user: { email, role: admin.role }
+    });
   } catch (error) {
     console.error('Login error:', error);
-    return res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -63,6 +48,6 @@ exports.register = async (req, res) => {
     // For now, registration is disabled for security
     res.status(403).json({ message: 'Registration is disabled. Contact administrator.' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error' });
   }
 };

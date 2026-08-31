@@ -16,3 +16,9 @@ npm-debug.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Flyway ignores
+*.user.toml
+*.artifact
+report.html
+report.json

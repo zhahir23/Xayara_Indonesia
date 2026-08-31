@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Git
+.git/
+.gitignore
+
+# Google credentials 
+credentials.json
+xayara-reservation-system-*.json
+
+# Build output 
+client/dist/
+client/.vite/
+
+# Non-essential project folders
+Instagram_files/
+Instagram.html
+
+# Documentation 
+*.md
+DEPLOYMENT.md
+GOOGLE_SHEETS_SETUP.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

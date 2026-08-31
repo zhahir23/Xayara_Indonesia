@@ -1,0 +1,70 @@
+name: xayaraindo
+
+services:
+  xayara-db:
+    image: postgres:13-alpine
+    container_name: xayara-indonesia-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: xayara_indonesia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+    ports:
+      - "127.0.0.1:5451:5432"
+    volumes:
+      - xayara-indonesia-pgdata:/var/lib/postgresql/data
+    networks:
+      - xayara-indonesia-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d xayara_indonesia"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+  xayara-app:
+    build: .
+    container_name: xayara-indonesia-app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5000"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: xayara-db
+      DB_PORT: 5432
+    volumes:
+      - ./credentials.json:/app/credentials.json
+    depends_on:
+      xayara-db:
+        condition: service_healthy
+      xayara-migration:
+        condition: service_completed_successfully
+    networks:
+      - xayara-indonesia-network
+  xayara-migration:
+    image: flyway/flyway:latest
+    container_name: xayara-indonesia-migration
+    command: >
+      -url=jdbc:postgresql://xayara-db:5432/xayara_indonesia
+      -user=postgres
+      -password=${DB_PASSWORD:-admin}
+      -locations=filesystem:/flyway/sql
+      migrate
+    volumes:
+      - ./server/database/migrations:/flyway/sql
+    depends_on:
+      xayara-db:
+        condition: service_healthy
+    networks:
+      - xayara-indonesia-network
+
+volumes:
+  xayara-indonesia-pgdata:
+    name: xayara-indonesia-pgdata
+
+networks:
+  xayara-indonesia-network:
+    name: xayara-indonesia-network
+    driver: bridge

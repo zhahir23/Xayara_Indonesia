@@ -20,6 +20,7 @@ const Login = () => {
     });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -27,27 +28,28 @@ const Login = () => {
 
     try {
       const response = await api.post('/auth/login', formData);
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      sessionStorage.setItem('token', response.data.token);
+      sessionStorage.setItem('user', JSON.stringify(response.data.user));
       navigate('/admin');
     } catch (err) {
-      setError('Email atau password salah');
-      console.error('Login error:', err);
+      const errorMessage = err.response?.data?.message || 'Email atau password salah';
+      setError(errorMessage);
+      console.error('Login error:', err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#0c1f41' }}>
       <div className="max-w-md w-full">
         <div className="card">
           <div className="text-center mb-8">
-            <Link to="/" className="inline-block mx-auto mb-4" title="Kembali ke Beranda">
+            <Link to="/" className="inline-block mb-4" title="Kembali ke Beranda" aria-label="Kembali ke Beranda">
               <img
                 src={logo}
                 alt="Xayara Indonesia"
-                className="h-14 w-auto object-contain mx-auto transition-transform hover:scale-105"
+                className="h-16 w-auto mx-auto object-contain transition-transform hover:scale-105"
               />
             </Link>
             <h2 className="text-3xl font-bold text-gray-900">
@@ -104,10 +106,12 @@ const Login = () => {
               </div>
             </div>
 
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-white font-medium py-3 px-4 rounded-lg transition-colors hover:opacity-90"
+              style={{ backgroundColor: '#0c1f41' }}
             >
               {loading ? (
                 <>
