@@ -80,7 +80,7 @@ const Login = () => {
                   required
                   autoComplete="username"
                   className="input-field pl-10"
-                  placeholder="admin@xayara.com"
+                  placeholder="Masukkan email admin"
                 />
               </div>
             </div>
