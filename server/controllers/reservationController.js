@@ -579,8 +579,8 @@ exports.updateReservation = async (req, res) => {
       totalUnit: 'total_unit',
       pk: 'pk',
       pkLainnya: 'pk_lainnya',
-      referralCode: 'referral_code',
       status: 'status'
+      // referral_code sengaja tidak di sini: diisi pelanggan saat reservasi, admin tidak boleh mengubah
     };
 
     for (const [key, dbField] of Object.entries(fieldMapping)) {

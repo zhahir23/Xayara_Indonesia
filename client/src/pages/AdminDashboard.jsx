@@ -1428,25 +1428,10 @@ const AdminDashboard = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Kode Referral</label>
-                  {filterOptions.referralCodeOptions.length > 0 ? (
-                    <select
-                      value={editingReservation.referralCode || ''}
-                      onChange={(e) => setEditingReservation({...editingReservation, referralCode: e.target.value})}
-                      className="input-field"
-                    >
-                      <option value="">Tanpa kode referral</option>
-                      {filterOptions.referralCodeOptions.map((option) => (
-                        <option key={option} value={option}>{option}</option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type="text"
-                      value={editingReservation.referralCode || ''}
-                      onChange={(e) => setEditingReservation({...editingReservation, referralCode: e.target.value})}
-                      className="input-field"
-                    />
-                  )}
+                  <div className="input-field bg-gray-50 text-gray-600 cursor-not-allowed">
+                    {editingReservation.referralCode || '-'}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Diisi pelanggan saat reservasi, tidak dapat diubah.</p>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-end gap-4 pt-4">
                   <button
