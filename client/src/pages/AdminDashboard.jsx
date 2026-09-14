@@ -972,7 +972,7 @@ const AdminDashboard = () => {
               <table className="w-full min-w-[1180px]">
                 <thead>
                   <tr className="border-b bg-gray-50 sticky top-0 z-20">
-                    <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500 sticky left-0 bg-gray-50 z-10 shadow-[8px_0_8px_-8px_rgba(0,0,0,0.12)]">Booking ID</th>
+                    <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500 md:sticky md:left-0 bg-gray-50 md:z-10 md:shadow-[8px_0_8px_-8px_rgba(0,0,0,0.12)]">Booking ID</th>
                     <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Nama</th>
                     <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Kontak</th>
                     <th
@@ -998,7 +998,7 @@ const AdminDashboard = () => {
                     <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
                     <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500">WhatsApp</th>
                     <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500 whitespace-nowrap">Kode Referral</th>
-                    <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500 sticky right-0 bg-gray-50 z-10 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.12)]">Aksi</th>
+                    <th className="text-left py-3 px-3 text-xs font-semibold uppercase tracking-wide text-gray-500 md:sticky md:right-0 bg-gray-50 md:z-10 md:shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.12)]">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1028,7 +1028,7 @@ const AdminDashboard = () => {
                   ) : (
                     filteredReservations.map((reservation) => (
                       <tr key={reservation.id} className="group border-b hover:bg-gray-50">
-                        <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap sticky left-0 bg-white group-hover:bg-gray-50 z-10 shadow-[8px_0_8px_-8px_rgba(0,0,0,0.12)] transition-colors">
+                        <td className="py-4 px-3 text-sm font-medium text-gray-900 whitespace-nowrap md:sticky md:left-0 bg-white group-hover:bg-gray-50 md:z-10 md:shadow-[8px_0_8px_-8px_rgba(0,0,0,0.12)] transition-colors">
                           {reservation.id}
                         </td>
                         <td className="py-4 px-3 max-w-[180px]">
@@ -1105,7 +1105,7 @@ const AdminDashboard = () => {
                         <td className="py-4 px-3 text-sm text-gray-900 whitespace-nowrap">
                           {reservation.referralCode || '-'}
                         </td>
-                        <td className="py-4 px-3 sticky right-0 bg-white group-hover:bg-gray-50 z-10 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.12)] transition-colors">
+                        <td className="py-4 px-3 md:sticky md:right-0 bg-white group-hover:bg-gray-50 md:z-10 md:shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.12)] transition-colors">
                           <div className="flex flex-col items-start gap-2 w-[132px]">
                             <CustomSelect
                               value={reservation.status}
