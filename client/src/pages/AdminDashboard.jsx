@@ -964,8 +964,157 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Table */}
-            <div className="card overflow-x-auto relative">
+            {/* Mobile: stacked cards (each field flows top-to-bottom, no horizontal scrolling needed) */}
+            <div className="card md:hidden p-0 overflow-hidden relative">
+              {loading && reservations.length > 0 && (
+                <div className="absolute inset-x-0 top-0 h-0.5 bg-primary-500 animate-pulse z-20" />
+              )}
+              {filteredReservations.length === 0 ? (
+                <div className="py-14 px-4">
+                  <div className="flex flex-col items-center text-center gap-2">
+                    <ClipboardList className="w-10 h-10 text-gray-300" />
+                    <p className="text-gray-600 font-medium">Tidak ada reservasi</p>
+                    <p className="text-sm text-gray-400">
+                      {activeFilterCount > 0
+                        ? 'Coba longgarkan atau reset filter di atas.'
+                        : 'Reservasi baru akan muncul di sini.'}
+                    </p>
+                    {activeFilterCount > 0 && (
+                      <button
+                        type="button"
+                        onClick={resetFilters}
+                        className="mt-1 text-sm text-primary-600 hover:text-primary-700 font-medium"
+                      >
+                        Reset filter
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {filteredReservations.map((reservation) => (
+                    <div key={reservation.id} className="p-4">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{reservation.id}</p>
+                          <p className="font-medium text-gray-900 truncate">{reservation.nama}</p>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm text-gray-500 truncate">{reservation.alamat}</p>
+                            {reservation.googleMapsLink && (
+                              <a
+                                href={reservation.googleMapsLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 flex-shrink-0"
+                                title="Lihat di Google Maps"
+                              >
+                                <MapPin className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex-shrink-0">{getStatusBadge(reservation.status)}</div>
+                      </div>
+
+                      <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm mb-3">
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">Kontak</dt>
+                          <dd className="text-gray-900 truncate">{reservation.email}</dd>
+                          <dd>
+                            <a
+                              href={`https://wa.me/${reservation.telepon.replace(/^0/, '62')}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-green-600 hover:underline"
+                            >
+                              {reservation.telepon}
+                            </a>
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">Tanggal</dt>
+                          <dd className="text-gray-900">{new Date(reservation.tanggal).toLocaleDateString('id-ID')}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">Kebutuhan</dt>
+                          <dd className="text-gray-900">
+                            {reservation.kebutuhan}
+                            {reservation.kebutuhanLainnya && <span className="text-gray-500"> ({reservation.kebutuhanLainnya})</span>}
+                          </dd>
+                          {reservation.kebutuhanCatatan && (
+                            <dd className="text-xs text-gray-500">{reservation.kebutuhanCatatan}</dd>
+                          )}
+                        </div>
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">Detail AC</dt>
+                          <dd className="text-gray-900">
+                            {reservation.merek}
+                            {reservation.merekLainnya && <span className="text-gray-500"> ({reservation.merekLainnya})</span>}
+                          </dd>
+                          <dd className="text-gray-500">
+                            {reservation.totalUnit} unit - {reservation.pk}
+                            {reservation.pkLainnya && ` (${reservation.pkLainnya})`}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">WhatsApp</dt>
+                          <dd>{getWhatsAppBadge(reservation.whatsappSent)}</dd>
+                        </div>
+                        <div>
+                          <dt className="text-xs text-gray-400 uppercase tracking-wide">Kode Referral</dt>
+                          <dd className="text-gray-900">{reservation.referralCode || '-'}</dd>
+                        </div>
+                      </dl>
+
+                      <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-100">
+                        <CustomSelect
+                          value={reservation.status}
+                          onChange={(val) => handleStatusUpdate(reservation.id, val)}
+                          options={[
+                            { value: 'pending', label: 'Pending' },
+                            { value: 'confirmed', label: 'Confirmed' },
+                            { value: 'completed', label: 'Completed' },
+                            { value: 'cancelled', label: 'Cancelled' }
+                          ]}
+                          className="max-w-[140px]"
+                        />
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <button
+                            onClick={() => handleResendWhatsApp(reservation.id)}
+                            disabled={resendingId === reservation.id || reservation.whatsappSent === true}
+                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            title={reservation.whatsappSent ? 'WhatsApp sudah terkirim' : 'Resend WhatsApp'}
+                          >
+                            {resendingId === reservation.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <MessageSquare className="w-4 h-4" />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleEdit(reservation)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(reservation.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Tablet/desktop: full table */}
+            <div className="card overflow-x-auto relative hidden md:block">
               {loading && reservations.length > 0 && (
                 <div className="absolute inset-x-0 top-0 h-0.5 bg-primary-500 animate-pulse z-20" />
               )}
