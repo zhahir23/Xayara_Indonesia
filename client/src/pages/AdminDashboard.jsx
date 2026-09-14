@@ -964,13 +964,13 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Mobile: stacked cards (each field flows top-to-bottom, no horizontal scrolling needed) */}
-            <div className="card md:hidden p-0 overflow-hidden relative">
+            {/* Mobile: one separate card per record (each field flows top-to-bottom, no horizontal scrolling needed) */}
+            <div className="md:hidden relative">
               {loading && reservations.length > 0 && (
-                <div className="absolute inset-x-0 top-0 h-0.5 bg-primary-500 animate-pulse z-20" />
+                <div className="absolute inset-x-0 top-0 h-0.5 bg-primary-500 animate-pulse z-20 rounded-full" />
               )}
               {filteredReservations.length === 0 ? (
-                <div className="py-14 px-4">
+                <div className="card py-14 px-4">
                   <div className="flex flex-col items-center text-center gap-2">
                     <ClipboardList className="w-10 h-10 text-gray-300" />
                     <p className="text-gray-600 font-medium">Tidak ada reservasi</p>
@@ -991,9 +991,9 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="divide-y divide-gray-100">
+                <div className="space-y-3">
                   {filteredReservations.map((reservation) => (
-                    <div key={reservation.id} className="p-4">
+                    <div key={reservation.id} className="card">
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="min-w-0">
                           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{reservation.id}</p>
